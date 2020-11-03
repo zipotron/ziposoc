@@ -1,8 +1,10 @@
 `include "flash.v"
 `include "ram.v"
+`include "instr_decompress.v"
 
-module ziposoc
- (	input	clk,
+module ziposoc #(
+	parameter EXTENSION_C = 1
+) (	input	clk,
 	output  [7:0] led,
  );
 
@@ -25,4 +27,14 @@ module ziposoc
 	defparam core0_ram.ram_width = dmem_width;
 
 	flash	 core0_flash ( clk, pmem_ce,pmem_a, pmem_d );
+	
+	instr_decompress #(
+		.PASSTHROUGH(!EXTENSION_C)
+	) decomp (
+		.instr_in       (fd_cir),
+		.instr_is_32bit (d_instr_is_32bit),
+		.instr_out      (d_instr),
+		.invalid        (d_invalid_16bit)
+	);
+
 endmodule
