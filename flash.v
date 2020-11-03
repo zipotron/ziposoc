@@ -8,7 +8,10 @@ module flash
  );
 
 reg [31:0] flash_array [0:2**flash_width-1];
-//`include "flash_array.v"
+
+initial begin
+	`include "flash_array.v"
+end
 
 reg [31:0] data_read;
 
