@@ -3,14 +3,6 @@ ENTRY( _start )
 
 SECTIONS
 {
-  /*
-   * ensure that start.S / _start is at 0x80000000,
-   * where qemu's -kernel jumps.
-   */
-  . = 0x03000000;
-  _leds = .;
-  . = 0x80000000;
-
   .text : {
     *(.text .text.*)
     _start = .;
@@ -23,6 +15,7 @@ SECTIONS
     . = ALIGN(16);
     *(.data .data.*)
   }
-
+  . = 0x03000000;
+  _leds = .;
   PROVIDE(end = .);
 }

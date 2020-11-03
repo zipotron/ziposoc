@@ -29,5 +29,25 @@ flash_array.v: main.mem
 main.disasm: main.elf
 	$(PREFIX)objdump -s -m $(ARCH) -d main.elf > main.disasm
 
+sint: ziposoc.bin
+
+#ziposoc_tb.vcd: ziposoc.v ziposoc_tb.v
+#	iverilog -o ziposoc_tb.out ziposoc.v ziposoc_tb.v
+#	./ziposoc_tb.out
+#	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw &
+
+ziposoc.bin: ziposoc.v ziposoc.pcf
+	#yosys -p "synth_ice40 -blif ziposoc.blif" ziposoc.v
+	yosys -p 'synth_ice40 -top ziposoc -json ziposoc.json' ziposoc.v
+
+	#arachne-pnr -d 8k -P tq144:4k -p ziposoc.pcf ziposoc.blif -o ziposoc.txt
+	nextpnr-ice40 --hx8k --package tq144:4k --json ziposoc.json --pcf ziposoc.pcf --asc ziposoc.asc
+
+	#icepack ziposoc.txt ziposoc.bin
+	icepack ziposoc.asc ziposoc.bin
+
+flash:
+	iceprog -d i:0x0403:0x6010:0 ziposoc.bin
+
 clean:
-	rm -f $(TARGETS) *.o *.elf *.mem *.disasm *.hex *.bin
+	rm -f $(TARGETS) *.o *.elf *.mem *.disasm *.hex *.bin *.asc *.json *.out *.vcd *~
