@@ -11,10 +11,7 @@ module ziposoc #(
 	wire		clk;
 	wire [7:0]	led;
 	
-	reg [31:0] io_mapped;
-	assign led = io_mapped[7:0];
-	
-	data_bus data(clk, LEDS);
+	data_bus data(1, 2'b00, LEDS, 8'b01010111, 0, led);
 	
 	zipocpu cpu(clk);
 

@@ -1,7 +1,7 @@
 module flash
  #(	parameter	flash_width = 9
  )
- (	input	[flash_width-1:0]	addr,
+ (	input	[flash_width+2:0]	addr,
 	output	[31:0]			data
  );
 
@@ -11,6 +11,6 @@ initial begin
 	`include "flash_array.v"
 end
 
-assign data = flash_array[addr];
+assign data = flash_array[addr>>2];
 
 endmodule
