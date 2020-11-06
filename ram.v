@@ -5,7 +5,7 @@ module ram
 	input wire [ram_width:0]	addr,
 	output wire [31:0]		read,
 	input wire [31:0] 		write,
-	output reg exception
+	output wire exception
  );
 
 reg [7:0] ram_array [0:2**ram_width];
