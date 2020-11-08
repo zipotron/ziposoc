@@ -11,23 +11,23 @@
 `define MSCRATCH 32'h00000020 //4 bytes Can be used a Stack pointer for interruption processing
 
 /* data section b'1000000*/
-`define DATA_RANGE 31:7
-`define DATA_TOKEN 6
+`define DATA_RANGE 31:11
+`define DATA_TOKEN 6:10
 /* 0x40 .. 0x0800*/
 `define RAM_INIT 32'h00000040
 `define RAM_END 32'h00000440 //1024 bytes
 `define INITIAL_SP 32'h0000043C
 
 /* text section b'100000000000*/
-`define TEXT_RANGE 31:12
-`define TEXT_TOKEN 11
+`define TEXT_RANGE 31:13
+`define TEXT_TOKEN 11:12
 /* 0x0800 .. 0x062C */
 `define FLASH_INIT 32'h00000800
 `define FLASH_END 32'h00001000 //2048 bytes
 `define INITIAL_PC 32'h00000800
 
 /* mapped IO section b'10000000000000*/
-`define IO_RANGE 31:14
-`define IO_TOKEN 13
+`define IO_RANGE 31:15
+`define IO_TOKEN 13:14
 /* 0x2000 */
 `define LEDS 32'h00002000
