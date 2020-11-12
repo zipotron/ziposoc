@@ -1,7 +1,7 @@
 module flash
  #(	parameter	flash_width = 9
  )
- (	input wire	[flash_width+2:0]	addr,
+ (	input wire	[31:0]	addr,
 	output wire	[31:0]			data,
 	output wire exception
  );
@@ -12,7 +12,7 @@ module flash
 		`include "flash_array.v"
 	end
 
-	assign data = flash_array[addr>>2];
+	assign data = |addr[31:flash_width + 3]? 0: flash_array[addr>>2];
 	assign exception = |addr[1:0];
 	
 endmodule
