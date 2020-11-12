@@ -14,9 +14,9 @@
 endmodule*/
 
 module data_bus (input wire	rw,
-				input wire	[1:0]len,
-				input wire  [31:0] addr,
-				input wire  [31:0] write,
+				input [1:0]len,
+				input [31:0] addr,
+				input [31:0] write,
 				output wire  [31:0] read,
 				output reg  [7:0] led,
 				output wire exception);

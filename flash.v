@@ -1,7 +1,7 @@
 module flash
  #(	parameter	flash_width = 9
  )
- (	input wire	[31:0]	addr,
+ (	input [31:0]	addr,
 	output wire	[31:0]			data,
 	output wire exception
  );

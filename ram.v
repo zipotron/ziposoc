@@ -1,11 +1,11 @@
 module ram
  #(	parameter	ram_width = 10
  )
- (	input wire rw,
-	input wire [1:0] len,
-	input wire [31:0]	addr,
+ (	input rw,
+	input [1:0] len,
+	input [31:0]	addr,
 	output wire [31:0]		read,
-	input wire [31:0] 		write,
+	input [31:0] 		write,
 	output wire exception
  );
 
