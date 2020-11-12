@@ -37,7 +37,7 @@ module data_bus (input wire	rw,
 	wire exception_ram;
 	wire exception_flash;
 	
-	ram	 core0_ram ( {rw,len}, addr, read_ram, write_ram, exception_ram );
+	ram	 core0_ram ( rw, len, addr, read_ram, write_ram, exception_ram );
 	defparam core0_ram.ram_width = 10;
 
 	flash	 core0_flash ( addr, read_flash, exception_flash );
