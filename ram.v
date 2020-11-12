@@ -2,7 +2,7 @@ module ram
  #(	parameter	ram_width = 10
  )
  (	input wire [2:0] rw_len,
-	input wire [ram_width:0]	addr,
+	input wire [31:0]	addr,
 	output wire [31:0]		read,
 	input wire [31:0] 		write,
 	output wire exception
@@ -10,11 +10,11 @@ module ram
 
 reg [7:0] ram_array [0:2**ram_width];
        
-assign read = ram_array[addr];//exception | rw[2]? 0 : ~|rw_len[1:0]? {ram_array[addr], 24'b0} : ~rw_len[2] & ~rw_len[1] & rw_len[0]? {ram_array[addr],ram_array[addr+1], 16'b0} : ~rw_len[2] & rw_len[1] & ~rw_len[0]? {ram_array[addr],ram_array[addr+1],ram_array[addr+2],ram_array[addr+3]} : 0;
+assign read = exception? 0: ram_array[addr];//exception | rw[2]? 0 : ~|rw_len[1:0]? {ram_array[addr], 24'b0} : ~rw_len[2] & ~rw_len[1] & rw_len[0]? {ram_array[addr],ram_array[addr+1], 16'b0} : ~rw_len[2] & rw_len[1] & ~rw_len[0]? {ram_array[addr],ram_array[addr+1],ram_array[addr+2],ram_array[addr+3]} : 0;
 
-assign exception = 0;//~|rw_len[1:0]? 0: ~rw_len[1] & rw_len[0] &addr[0]? 0: rw_len[1] & ~rw_len[0] & ~|addr[1:0]? 0: 1;
+assign exception = |addr[31:ram_width + 1]? 1: 0;//~|rw_len[1:0]? 0: ~rw_len[1] & rw_len[0] &addr[0]? 0: rw_len[1] & ~rw_len[0] & ~|addr[1:0]? 0: 1;
 
-always @(addr) begin
+always @(addr, rw_len[2]) begin
 	if (rw_len[2] & ~exception) begin
 		/*case (rw_len[1:0])
 			2'b00:*/
