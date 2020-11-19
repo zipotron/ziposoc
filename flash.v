@@ -9,7 +9,7 @@ module flash
 	reg [31:0] flash_array [0:2**flash_width];
 
 	initial begin
-		`include "flash_array.v"
+		`include "flash_array.vh"
 	end
 
 	assign data = exception? 0: flash_array[addr>>2];

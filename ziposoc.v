@@ -1,6 +1,4 @@
 `include "memory_map.v"
-`include "data_bus.v"
-`include "zipocpu.v"
 
 module freq_div #(parameter PERIOD=6000,
 					parameter PERIOD_WIDTH=12) (input clk, output reg clk_1khz);
@@ -20,17 +18,13 @@ endmodule
 module ziposoc #(
 	parameter EXTENSION_C = 1
 ) (	input	clk,
-	output  [7:0] led,
- );
+	output  [7:0] led);
 
-	wire		clk;
-	wire [7:0]	led;
-	
 	//reg [7:0]	led;
 	reg [31:0]	counter = `FLASH_INIT;
 	reg [31:0]	counter2 = `RAM_INIT;
 	wire [31:0] addr;
-	reg [7:0]	byte_read;
+	wire [7:0]	byte_read;
 	wire [7:0]	byte_write;
 	reg rw = 0;
 	//reg len;
@@ -45,7 +39,6 @@ module ziposoc #(
 	assign mask = 0;//copy? 0 : 21;
 	
 	data_bus data(.rw(rw), .len(2'b00), .addr(addr), .read(byte_read), .write(byte_write), .exception(exception));
-	//data_bus data(.rw(1), .len(2'b00), .addr(32'h00000004), .write(8'b01010111), .led(led));
 	
 	zipocpu cpu(clk);
 	

@@ -1,6 +1,3 @@
-`include "flash.v"
-`include "ram.v"
-`include "memory_map.v"
 
 /*module io#(	parameter	csr_width = 8
  )
@@ -36,6 +33,8 @@ module data_bus (input wire	rw,
 	
 	wire exception_ram;
 	wire exception_flash;
+	wire exception_io;
+	wire exception_csr;
 	
 	ram	 core0_ram ( rw, len, addr, read_ram, write_ram, exception_ram );
 	defparam core0_ram.ram_width = 10;
