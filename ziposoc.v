@@ -40,7 +40,7 @@ module ziposoc #(
 	wire [7:0] mask;
 	assign mask = 0;//copy? 0 : 21;
 	
-	data_bus data(.clk(clk), .rw(clk_1khz), .len(2'b00), .addr(addr), .read(byte_read), .write(byte_write), .exception(exception));
+	data_bus data(.rw(clk_1khz), .len(2'b00), .addr(addr), .read(byte_read), .write(byte_write), .exception(exception));
 	
 	zipocpu cpu(clk);
 	
