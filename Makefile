@@ -38,7 +38,7 @@ sint: ziposoc.bin
 
 ziposoc.bin: ziposoc.v ziposoc.pcf
 	#yosys -p "synth_ice40 -blif ziposoc.blif" ziposoc.v
-	yosys -p 'synth_ice40 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v flash.v ram.v instr_decompress.v
+	yosys -p 'synth_ice40 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
 
 	#arachne-pnr -d 8k -P tq144:4k -p ziposoc.pcf ziposoc.blif -o ziposoc.txt
 	nextpnr-ice40 --hx8k --package tq144:4k --json ziposoc.json --pcf ziposoc.pcf --asc ziposoc.asc
@@ -50,10 +50,10 @@ flash:
 	iceprog -d i:0x0403:0x6010:0 ziposoc.bin
 
 diagram:
-	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v flash.v ram.v instr_decompress.v
+	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
 	
 schematic:
-	yosys -p 'prep -top ziposoc -flatten; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v flash.v ram.v instr_decompress.v
+	yosys -p 'prep -top ziposoc -flatten; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
 	
 clean:
 	rm -f $(TARGETS) *.o *.elf *.mem *.disasm *.hex *.bin *.asc *.json *.out *.vcd *~
