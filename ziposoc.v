@@ -22,15 +22,15 @@ module ziposoc #(
 	output  [7:0] led);
 
 	//reg [7:0]	led;
-	reg [31:0]	counter = `FLASH_INIT;
-	reg [31:0]	counter2 = `RAM_INIT +128;
+	reg [31:0]	counter = 0;
+	
 	wire [31:0] addr;
 	wire [7:0]	byte_read;
 	wire [7:0]	byte_write;
 	//reg [7:0]	byte_write;
 	
 	//reg len;
-	reg copy = 1;
+	//reg copy = 1;
 	
 	assign addr = clk_1khz? counter2 : counter;
 	assign led = byte_read[7:0] | mask;
@@ -52,20 +52,15 @@ module ziposoc #(
 		byte_write <= byte_read | 65;*/
 	
 	always @(posedge clk_1khz) 
-		if (copy) begin
-			
-			if (counter == `FLASH_INIT + 260) begin
-				counter <= `RAM_INIT;
-				copy <= 0;
-			end
-			else
-				counter = counter + 1;
+		if (counter == `RAM_END) begin
+			counter <= `RAM_INIT;
+			mask <= 255;
 		end
 		else
-			counter <= counter + 1;
+			counter = counter + 1;
 		
-	always @(negedge clk_1khz)
+/*	always @(negedge clk_1khz)
 		if (copy)
-			counter2 <= counter2 + 1;
+			counter2 <= counter2 + 1;*/
 		
 endmodule
