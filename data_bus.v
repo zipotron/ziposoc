@@ -20,9 +20,9 @@ module data_bus (input wire	rw,
 
 	wire [31:0] write_io;
 	//io core0_io ( .rw_len({rw,len}), .addr(addr), .read(read_io), .write(write_io) , .exception(exception));
-	reg [31:0]read_csr = 1;//just for debug
+	reg [31:0]read_csr = 127;//just for debug
 	//reg [31:0]read_ram = 4;//just for debug
-	reg [31:0]read_io = 16;//just for debug
+	reg [31:0]read_io = 128;//just for debug
 	
 	wire [31:0] read_ram;
 	

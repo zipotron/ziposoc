@@ -8,10 +8,13 @@ module ram
 	input [31:0] 		write,
 	output wire exception
  );
-
+	integer i;
 	reg [7:0] ram_array [0:2**ram_width];
 	initial begin
 		`include "flash_array.vh"
+		for(i=`INITIAL_SP;i<`IO_INIT;i=i+1) begin
+			ram_array[i]=0;
+		end
 	end
 	
 	assign read = exception | rw? 0: ram_array[addr];//exception | rw[2]? 0 : ~|rw_len[1:0]? {ram_array[addr], 24'b0} : ~rw_len[2] & ~rw_len[1] & rw_len[0]? {ram_array[addr],ram_array[addr+1], 16'b0} : ~rw_len[2] & rw_len[1] & ~rw_len[0]? {ram_array[addr],ram_array[addr+1],ram_array[addr+2],ram_array[addr+3]} : 0;
