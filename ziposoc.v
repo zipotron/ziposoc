@@ -22,7 +22,7 @@ module ziposoc #(
 	output  [7:0] led);
 
 	//reg [7:0]	led;
-	reg [31:0]	counter = 0;
+	reg [31:0]	counter = `RAM_INIT;
 	
 	wire [31:0] addr;
 	wire [7:0]	byte_read;
@@ -37,8 +37,8 @@ module ziposoc #(
 	//assign led = ~exception? byte_read[7:0] | mask : 0;
 	assign byte_write = byte_read | 127;
 	
-	wire [7:0] mask;
-	assign mask = 0;//copy? 0 : 21;
+	reg [7:0] mask=0;
+	//assign mask = 0;//copy? 0 : 21;
 	
 	data_bus data(.rw(clk_1khz), .len(2'b00), .addr(addr), .read(byte_read), .write(byte_write), .exception(exception));
 	
