@@ -2,8 +2,8 @@ PREFIX = /opt/riscv32imc/bin/riscv32-unknown-elf-
 FIRMWARE = main
 
 PMEM_DEPTH=10
-PMEM_WORDS=$(shell echo $$((1<<$(PMEM_DEPTH))))
-PMEM_SIZE=$(shell echo $$((2<<$(PMEM_DEPTH))))
+CSR_SIZE=64
+PMEM_SIZE=$(shell echo $$(((2<<$(PMEM_DEPTH))-$(CSR_SIZE))))
 
 .PHONY: all clean
 
@@ -24,7 +24,7 @@ main.mem: main.bin
 	cat main.bin /dev/zero | head -c $(PMEM_SIZE) | hexdump -v -e '/4 "%.8x\n"' > main.mem
 
 flash_array.vh: main.mem
-	awk '{ printf("{ram_array[%d],ram_array[%d],ram_array[%d],ram_array[%d]}=32%ch%s;\n",n+64,n+65,n+66,n+67,39,$$1);n=n+4; }' < main.mem > flash_array.vh
+	awk '{ printf("{ram_array[%d],ram_array[%d],ram_array[%d],ram_array[%d]}=32%ch%s;\n",n+$(CSR_SIZE),n+$(CSR_SIZE)+1,n+$(CSR_SIZE)+2,n+$(CSR_SIZE)+3,39,$$1);n=n+4; }' < main.mem > flash_array.vh
 
 main.disasm: main.elf
 	$(PREFIX)objdump -s -m $(ARCH) -d main.elf > main.disasm

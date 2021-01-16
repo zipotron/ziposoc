@@ -3,6 +3,7 @@ ENTRY( _start )
 
 SECTIONS
 {
+  . = 0x00000040;
   .text : {
     *(.text .text.*)
     _start = .;
