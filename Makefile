@@ -45,10 +45,10 @@ ziposoc.bit: ziposoc.v
 
 	nextpnr-ecp5 --${DEVICE} --package CABGA381 --freq 25 --json ziposoc.json --lpf ulx3s_v20.lpf --textcfg ziposoc.config
 
-	ecppack ziposoc.config --compress
+	ecppack ziposoc.config --compress ziposoc.bit
 
 flash:
-	ujprog ziposoc.bit
+	fujprog ziposoc.bit
 
 diagram:
 	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
