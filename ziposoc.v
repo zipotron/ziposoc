@@ -18,9 +18,11 @@ endmodule
 
 module ziposoc #(
 	parameter EXTENSION_C = 1
-) (	input	clk,
-	output  [7:0] led);
+) (	input	clk25_mhz,
+	output  [7:0] leds);
 
+	assign clk=clk25_mhz;
+	assign led=leds;
 	//reg [7:0]	led;
 	reg [31:0]	counter = 0;
 	

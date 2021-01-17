@@ -1,3 +1,6 @@
+PIN_DEF ?= ulx3s_v20.lpf
+DEVICE ?= 85k
+
 PREFIX = /opt/riscv32imc/bin/riscv32-unknown-elf-
 FIRMWARE = main
 
@@ -29,25 +32,23 @@ flash_array.vh: main.mem
 main.disasm: main.elf
 	$(PREFIX)objdump -s -m $(ARCH) -d main.elf > main.disasm
 
-sint: ziposoc.bin
+sint: ziposoc.bit
 
 #ziposoc_tb.vcd: ziposoc.v ziposoc_tb.v
 #	iverilog -o ziposoc_tb.out ziposoc.v ziposoc_tb.v
 #	./ziposoc_tb.out
 #	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw &
 
-ziposoc.bin: ziposoc.v ziposoc.pcf
-	#yosys -p "synth_ice40 -blif ziposoc.blif" ziposoc.v
-	yosys -p 'synth_ice40 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
+ziposoc.bit: ziposoc.v
 
-	#arachne-pnr -d 8k -P tq144:4k -p ziposoc.pcf ziposoc.blif -o ziposoc.txt
-	nextpnr-ice40 --hx8k --package tq144:4k --json ziposoc.json --pcf ziposoc.pcf --asc ziposoc.asc
+	yosys -p 'synth_ecp5 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
 
-	#icepack ziposoc.txt ziposoc.bin
-	icepack ziposoc.asc ziposoc.bin
+	nextpnr-ecp5 --${DEVICE} --package CABGA381 --freq 25 --json ziposoc.json --lpf ulx3s_v20.lpf --textcfg ziposoc.config
+
+	ecppack ziposoc.config --compress
 
 flash:
-	iceprog -d i:0x0403:0x6010:0 ziposoc.bin
+	ujprog ziposoc.bit
 
 diagram:
 	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
@@ -56,4 +57,4 @@ schematic:
 	yosys -p 'prep -top ziposoc -flatten; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
 	
 clean:
-	rm -f $(TARGETS) *.o *.elf *.mem *.disasm *.hex *.bin *.asc *.json *.out *.vcd *~
+	rm -f $(TARGETS) *.o *.elf *.mem *.disasm *.hex *.bin *.bit *.json *.config *.out *.vcd *~
