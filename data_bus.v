@@ -10,7 +10,8 @@
 
 endmodule*/
 
-module data_bus (input wire	rw,
+module data_bus (input clk,
+				input wire	rw,
 				input [1:0]len,
 				input [31:0] addr,
 				input [31:0] write,
@@ -32,7 +33,7 @@ module data_bus (input wire	rw,
 	wire exception_io;
 	wire exception_csr;
 	
-	ram	 core0_ram ( rw, len, addr, read_ram, write_ram, exception_ram );
+	ram	 core0_ram (clk, rw, len, addr, read_ram, write_ram, exception_ram );
 	defparam core0_ram.ram_width = 12;
 
 	assign exception = ~|addr[`DATA_RANGE] & |addr[`DATA_TOKEN]? exception_ram : ~|addr[`IO_RANGE] & |addr[`IO_TOKEN]? exception_io : exception_csr;

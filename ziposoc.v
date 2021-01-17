@@ -21,7 +21,7 @@ module ziposoc #(
 ) (	input	clk25_mhz,
 	output  [7:0] leds);
 
-	reg [31:0]	counter = 0;
+	reg [31:0]	counter = `INITIAL_SP;
 	
 	wire [31:0] addr;
 	wire [7:0]	byte_read;
@@ -29,17 +29,17 @@ module ziposoc #(
 	//reg [7:0]	byte_write;
 	
 	//reg len;
-	//reg copy = 1;
+	reg copy = 1;
 	
 	//assign addr = clk_1khz? counter2 : counter;
 	assign leds = byte_read[7:0] | mask;
 	//assign leds = ~exception? byte_read[7:0] | mask : 0;
-	assign byte_write = byte_read | 127;
+	assign byte_write = byte_read | 224;
 	
 	reg [7:0] mask=0;
 	//assign mask = 0;//copy? 0 : 21;
 	
-	data_bus data(.rw(0), .len(2'b00), .addr(counter), .read(byte_read), .write(byte_write), .exception(exception));
+	data_bus data(.clk(clk_1khz), .rw(copy), .len(2'b00), .addr(counter), .read(byte_read), .write(byte_write), .exception(exception));
 	
 	zipocpu cpu(clk25_mhz);
 	
@@ -53,10 +53,11 @@ module ziposoc #(
 	always @(posedge clk_1khz) 
 		if (counter == `MEM_END) begin
 			counter <= 0;
-			mask <= 255;
+			copy <= 0;
+			if(copy==0)mask <= 255;
 		end
 		else
-			counter = counter + 1;
+			counter <= counter + 1;
 		
 /*	always @(negedge clk_1khz)
 		if (copy)
