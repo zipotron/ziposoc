@@ -21,9 +21,6 @@ module ziposoc #(
 ) (	input	clk25_mhz,
 	output  [7:0] leds);
 
-	assign clk=clk25_mhz;
-	assign led=leds;
-	//reg [7:0]	led;
 	reg [31:0]	counter = 0;
 	
 	wire [31:0] addr;
@@ -35,8 +32,8 @@ module ziposoc #(
 	//reg copy = 1;
 	
 	//assign addr = clk_1khz? counter2 : counter;
-	assign led = byte_read[7:0] | mask;
-	//assign led = ~exception? byte_read[7:0] | mask : 0;
+	assign leds = byte_read[7:0] | mask;
+	//assign leds = ~exception? byte_read[7:0] | mask : 0;
 	assign byte_write = byte_read | 127;
 	
 	reg [7:0] mask=0;
@@ -44,13 +41,13 @@ module ziposoc #(
 	
 	data_bus data(.rw(0), .len(2'b00), .addr(counter), .read(byte_read), .write(byte_write), .exception(exception));
 	
-	zipocpu cpu(clk);
+	zipocpu cpu(clk25_mhz);
 	
-	freq_div div(clk, clk_1khz);
+	freq_div div(clk25_mhz, clk_1khz);
 	defparam div.PERIOD = 30000;
 	defparam div.PERIOD_WIDTH = 20;
 	
-	/*always @(negedge clk)
+	/*always @(negedge clk25_mhz)
 		byte_write <= byte_read | 65;*/
 	
 	always @(posedge clk_1khz) 
