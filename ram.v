@@ -18,24 +18,23 @@ module ram
 		end
 	end
 	
-	assign read = exception | rw? 0 : ~|len[1:0]? {24'b0, ram_array[addr]} : ~len[1] & len[0]? {16'b0, ram_array[addr+1], ram_array[addr]} : len[1] & ~len[0]? {ram_array[addr+3],ram_array[addr+2],ram_array[addr+1],ram_array[addr]} : 0;
-
-	assign exception = ~|len[1:0]? 0: ~len[1] & len[0] &addr[0]? 0: len[1] & ~len[0] & ~|addr[1:0]? 0: 1;
-
+	assign read = exception | rw? 0: ram_array[addr];
+	assign exception = |addr[31:ram_width + 1]? 1: 0;
+	
 	always @(posedge clk) begin
 		if (rw & ~exception) begin
 			/*case (len[1:0])
 				2'b00:*/
 					ram_array[addr] <= write;
 				/*2'b01: begin
-					ram_array[addr] <= write;
-					ram_array[addr+1] <= write[15:8];
+					ram_array[addr] = write;
+					ram_array[addr+1] = write[15:8];
 				end
 				2'b10: begin
-					ram_array[addr] <= write;
-					ram_array[addr+1] <= write[15:8];
-					ram_array[addr+2] <= write[23:16];
-					ram_array[addr+3] <= write[31:24];
+					ram_array[addr] = write;
+					ram_array[addr+1] = write[15:8];
+					ram_array[addr+2] = write[23:16];
+					ram_array[addr+3] = write[31:24];
 				end
 			endcase*/
 		end
