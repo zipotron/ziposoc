@@ -24,8 +24,8 @@ module ziposoc #(
 	reg [31:0]	counter = `INITIAL_SP;
 	
 	wire [31:0] addr;
-	wire [7:0]	byte_read;
-	wire [7:0]	byte_write;
+	wire [31:0]	byte_read;
+	wire [31:0]	byte_write;
 	//reg [7:0]	byte_write;
 	
 	//reg len;
@@ -39,7 +39,7 @@ module ziposoc #(
 	reg [7:0] mask=0;
 	//assign mask = 0;//copy? 0 : 21;
 	
-	data_bus data(.clk(clk_1khz), .rw(copy), .len(2'b00), .addr(counter), .read(byte_read), .write(byte_write), .exception(exception));
+	data_bus data(.clk(clk_1khz), .rw(copy), .addr(counter), .read(byte_read), .write(byte_write), .exception(exception));
 	
 	zipocpu cpu(clk25_mhz);
 	
