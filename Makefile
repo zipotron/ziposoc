@@ -5,7 +5,7 @@ PREFIX = /opt/riscv32imc/bin/riscv32-unknown-elf-
 FIRMWARE = main
 
 PMEM_DEPTH=10
-CSR_SIZE=64
+CSR_SIZE=16
 PMEM_SIZE=$(shell echo $$(((2<<$(PMEM_DEPTH))-$(CSR_SIZE))))
 
 .PHONY: all clean
@@ -24,20 +24,15 @@ main.bin: main.elf
 	$(PREFIX)objcopy -j .text -j .data -O binary main.elf main.bin
 
 main.mem: main.bin
-	cat main.bin /dev/zero | head -c $(PMEM_SIZE) | hexdump -v -e '/4 "%.8x\n"' > main.mem
+	cat main.bin /dev/zero | head -c $(PMEM_SIZE) | hexdump -v -e '/8 "%.16x\n"' > main.mem
 
 flash_array.vh: main.mem
-	awk '{ printf("{ram_array[%d],ram_array[%d],ram_array[%d],ram_array[%d]}=32%ch%s;\n",n+$(CSR_SIZE),n+$(CSR_SIZE)+1,n+$(CSR_SIZE)+2,n+$(CSR_SIZE)+3,39,$$1);n=n+4; }' < main.mem > flash_array.vh
+	awk '{ printf("ram_array[%d]=64%ch%s;\n",n+$(CSR_SIZE),39,$$1);n=n+1; }' < main.mem > flash_array.vh
 
 main.disasm: main.elf
 	$(PREFIX)objdump -s -m $(ARCH) -d main.elf > main.disasm
 
 sint: ziposoc.bit
-
-#ziposoc_tb.vcd: ziposoc.v ziposoc_tb.v
-#	iverilog -o ziposoc_tb.out ziposoc.v ziposoc_tb.v
-#	./ziposoc_tb.out
-#	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw &
 
 ziposoc.bit: ziposoc.v
 
@@ -49,6 +44,12 @@ ziposoc.bit: ziposoc.v
 
 flash:
 	fujprog ziposoc.bit
+
+
+sim:
+	iverilog -o data_bus_tb.out memory_map.v data_bus.v ram.v data_bus_tb.v
+	./data_bus_tb.out &
+	gtkwave data_bus_tb.vcd data_bus_tb.gtkw
 
 diagram:
 	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
