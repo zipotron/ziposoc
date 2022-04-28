@@ -1,5 +1,5 @@
 /* CSR */
-`define CSR_RANGE 63:5
+`define CSR_RANGE 63:6
 /* 0 .. 0x40  64bytes*/
 `define MSTATUS 64'h0000000000000000 //4 bytes Machine status
 `define MCAUSE 64'h0000000000000004 //4 bytes interruption or exception cause
