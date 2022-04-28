@@ -5,7 +5,7 @@ PREFIX = /opt/riscv32imc/bin/riscv32-unknown-elf-
 FIRMWARE = main
 
 PMEM_DEPTH=10
-CSR_SIZE=16
+CSR_SIZE=8
 PMEM_SIZE=$(shell echo $$(((2<<$(PMEM_DEPTH))-$(CSR_SIZE))))
 
 .PHONY: all clean

@@ -3,7 +3,7 @@
 module test;
 
   /* Make a reset that pulses once. */
-	reg [63:0]	counter = `INITIAL_SP;
+	reg [63:0]	counter = `INITIAL_PC;
 	
 	wire [63:0] addr;
 	wire [63:0]	byte_read;
