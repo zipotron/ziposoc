@@ -9,5 +9,9 @@ module zipocpu #(
 		.instr_out      (d_instr),
 		.invalid        (d_invalid_16bit)
 	);
-
+	
+		
+	ram	 csr_ram (clk, rw, addr, read_csr, write_csr, exception_csr );
+	defparam csr_ram.ram_width = 6;
+	
 endmodule

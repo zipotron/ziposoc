@@ -18,7 +18,6 @@ module data_bus (input clk,
 				output reg [7:0] led=0,
 				output exception);
 
-	wire [63:0] write_csr;
 	wire [63:0] write_io;
 	//io core0_io ( .rw_len({rw,len}), .addr(addr), .read(read_io), .write(write_io) , .exception(exception));
 	
@@ -30,13 +29,9 @@ module data_bus (input clk,
 	
 	wire exception_ram;
 	wire exception_io;
-	wire exception_csr;
 	
 	ram	 core_ram (clk, rw, addr, read_ram, write_ram, exception_ram );
 	defparam core_ram.ram_width = 12;
-	
-	ram	 csr_ram (clk, rw, addr, read_csr, write_csr, exception_csr );
-	defparam csr_ram.ram_width = 6;
 
 	assign exception = ~|addr[`DATA_RANGE] & |addr[`DATA_TOKEN]? exception_ram : ~|addr[`IO_RANGE] & |addr[`IO_TOKEN]? exception_io : exception_csr;
 	
@@ -44,8 +39,7 @@ module data_bus (input clk,
 	
 	assign write_ram = ~|addr[`DATA_RANGE] & |addr[`DATA_TOKEN]? write : 0;
 	assign write_io = ~|addr[`IO_RANGE] & |addr[`IO_TOKEN]? write : 0;
-	assign write_csr = ~|addr[`CSR_RANGE]? write : 0;
-	
+
 	/*always @(addr)
 		if (rw & ~|(addr ^ (`LEDS))) led <= write_io;*/
 	
