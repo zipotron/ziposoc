@@ -18,8 +18,8 @@ module ram
 		end
 	end
 	
-	assign read = exception | rw? 0: ram_array[addr >> bus_width]; //Each cell have 4 bytes
-	assign exception = |addr[63:ram_width + 1] | |addr[1:0]? 1: 0; //Checking, first out of range, second alignent
+	assign read = exception | rw? 0: ram_array[addr >> bus_width]; //Each cell have 8 bytes
+	assign exception = |addr[63:ram_width + 1]? 1: 0; //Checking out of range
 	
 	always @(posedge clk) begin
 		if (rw & ~exception)

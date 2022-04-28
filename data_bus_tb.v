@@ -13,6 +13,8 @@ module test;
 	
   initial begin
 	$dumpfile("data_bus_tb.vcd");
+	$dumpvars(0, counter);
+	$dumpvars(1, byte_read);
 /*     # 17 copy = 0;
 	 # 25 led = 8'b10110110;
      # 100 $finish;*/
