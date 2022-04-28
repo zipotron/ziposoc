@@ -1,27 +1,35 @@
 
-/*module io#(	parameter	csr_width = 8
+module io#(	parameter	ram_width = 14,
+			parameter	bus_width = 3
  )
- (	input wire [2:0] rw_len,
-	input wire [csr_width:0]	addr,
-	output wire [63:0]		read,
-	input wire [63:0] 		write,
-	output reg  [7:0] led,
-	output wire exception);
-
-endmodule*/
+ (			input clk,
+			input rw,
+			input [63:0] addr,
+			input [63:0] write,
+			output [63:0] read,
+			output reg [7:0] led=0,
+			output exception);
+	
+	//assign read = exception | rw? 0: ram_array[addr >> bus_width]; //Each cell have 8 bytes
+	assign exception = |addr[63:ram_width + 1]? 1: 0; //Checking out of range
+	reg [63:0]read_io = 62;//just for debug
+	assign read = read_io;
+	
+	always @(addr)
+		if (rw & ~|(addr ^ (`LEDS))) led <= write;
+		
+endmodule
 
 module data_bus (input clk,
 				input rw,
 				input [63:0] addr,
 				input [63:0] write,
 				output [63:0] read,
-				output reg [7:0] led=0,
+				output [7:0] led,
 				output exception);
 
 	wire [63:0] write_io;
-	//io core0_io ( .rw_len({rw,len}), .addr(addr), .read(read_io), .write(write_io) , .exception(exception));
-	
-	reg [63:0]read_io = 62;//just for debug
+	io core0_io (.clk(clk), .rw(rw), .addr(addr), .read(read_io), .write(write_io) , .exception(exception), .led(led));
 	
 	wire [63:0] read_ram;
 	
@@ -39,8 +47,5 @@ module data_bus (input clk,
 	
 	assign write_ram = ~|addr[`DATA_RANGE] & |addr[`DATA_TOKEN]? write : 0;
 	assign write_io = ~|addr[`IO_RANGE] & |addr[`IO_TOKEN]? write : 0;
-
-	/*always @(addr)
-		if (rw & ~|(addr ^ (`LEDS))) led <= write_io;*/
 	
 endmodule
