@@ -1,7 +1,7 @@
 PIN_DEF ?= ulx3s_v20.lpf
 DEVICE ?= 85k
 
-PREFIX = /opt/riscv32imc/bin/riscv32-unknown-elf-
+PREFIX = /opt/riscv64/bin/riscv64-unknown-elf-
 FIRMWARE = main
 
 PMEM_DEPTH=10
@@ -15,7 +15,7 @@ TARGETS=main.disasm main.mem flash_array.vh
 all: $(TARGETS)
 
 main.elf: sections.lds start.s firmware.c
-	$(PREFIX)gcc -march=rv32imc -Wl,-Bstatic,-T,sections.lds,--strip-debug -ffreestanding -nostdlib -o $(FIRMWARE).elf start.s firmware.c
+	$(PREFIX)gcc -march=rv64id -Wl,-Bstatic,-T,sections.lds,--strip-debug -ffreestanding -nostdlib -o $(FIRMWARE).elf start.s firmware.c
 	
 main.hex: main.elf
 	$(PREFIX)objcopy -j .text -j .data -O ihex main.elf main.hex
@@ -36,7 +36,7 @@ sint: ziposoc.bit
 
 ziposoc.bit: ziposoc.v
 
-	yosys -p 'synth_ecp5 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
+	yosys -p 'synth_ecp5 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v
 
 	nextpnr-ecp5 --${DEVICE} --package CABGA381 --freq 25 --json ziposoc.json --lpf ulx3s_v20.lpf --textcfg ziposoc.config
 
