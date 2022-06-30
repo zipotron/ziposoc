@@ -12,7 +12,7 @@ module io#(	parameter	ram_width = 14,
 	
 	//assign read = exception | rw? 0: ram_array[addr >> bus_width]; //Each cell have 8 bytes
 	assign exception = |addr[63:ram_width + 1]? 1: 0; //Checking out of range
-	reg [63:0]read_io = 62;//just for debug
+	reg [63:0]read_io = 7;//just for debug
 	assign read = read_io;
 	
 	always @(addr)
@@ -27,7 +27,9 @@ module data_bus (input clk,
 				output [63:0] read,
 				output [7:0] led,
 				output exception);
-
+	reg [63:0]read_csr = 3;//just for debug
+	reg exception_csr = 0;//just for debug
+	
 	wire [63:0] write_io;
 	io core0_io (.clk(clk), .rw(rw), .addr(addr), .read(read_io), .write(write_io) , .exception(exception), .led(led));
 	
