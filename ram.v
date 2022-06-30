@@ -13,7 +13,7 @@ module ram
 	reg [63:0] ram_array [0:2**(ram_width - bus_width)];
 	initial begin
 		`include "flash_array.vh"
-		for(i=`INITIAL_SP;i<`IO_INIT;i=i+1) begin
+		for(i=(`INITIAL_SP >> 3);i<(`IO_INIT >> 3);i=i+1) begin
 			ram_array[i]=0;
 		end
 	end
