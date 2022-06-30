@@ -5,8 +5,8 @@ PREFIX = /opt/riscv64/bin/riscv64-unknown-elf-
 FIRMWARE = main
 
 PMEM_DEPTH=10
-CSR_SIZE=64
-PMEM_SIZE=$(shell echo $$(((2<<$(PMEM_DEPTH))-$(CSR_SIZE))))
+CSR_SIZE=8
+PMEM_SIZE=$(shell echo $$(((2<<$(PMEM_DEPTH))-($(CSR_SIZE) * 8))))
 
 .PHONY: all clean
 
