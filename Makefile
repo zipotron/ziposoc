@@ -47,9 +47,9 @@ flash:
 
 
 sim:
-	iverilog -o data_bus_tb.out memory_map.v data_bus.v ram.v data_bus_tb.v
-	./data_bus_tb.out &
-	gtkwave data_bus_tb.vcd data_bus_tb.gtkw
+	iverilog -o ziposoc_tb.out memory_map.v data_bus.v ram.v zipocpu.v ziposoc_tb.v
+	./ziposoc_tb.out &
+	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw
 
 diagram:
 	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v

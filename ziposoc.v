@@ -21,41 +21,21 @@ module ziposoc #(
 ) (	input	clk25_mhz,
 	output  [7:0] leds);
 
-	reg [63:0]	counter = `INITIAL_SP;
-	
 	wire [63:0] addr;
 	wire [63:0]	byte_read;
-	reg [63:0]	byte_write;
+	wire [63:0]	byte_write;
 	wire [7:0] leds_io;
-	reg w_flag = 0;
+	wire rw;
 	
-	assign leds = led_switch? byte_read[7:0] : 0;//leds_io; //SHOUDNT KEEP ON LEDS, wires are misbehaving
-	
+	assign leds = led_switch? byte_read[7:0] : leds_io; //SHOUDNT KEEP ON LEDS, wires are misbehaving
 	reg led_switch=0;
 	
-	data_bus data(.clk(clk_1khz), .rw(w_flag), .addr(counter), .read(byte_read), .write(byte_write), .led(leds_io), .exception(exception));
+	data_bus data(.clk(clk_1khz), .rw(rw), .addr(addr), .read(byte_read), .write(byte_write), .led(leds_io), .exception(exception));
 	
-	zipocpu cpu(clk25_mhz);
+	zipocpu cpu(clk25_mhz, rw, addr, byte_write, byte_read);
 	
 	freq_div div(clk25_mhz, clk_1khz);
 	defparam div.PERIOD = 30000;
 	defparam div.PERIOD_WIDTH = 20;
-	
-	always @(negedge clk_1khz)
-	  begin
-		//byte_write <= byte_read | 65;
-		w_flag <= 0;
-	  end
-	
-	always @(posedge clk_1khz) 
-		if (counter == `MEM_END) begin
-			w_flag <= 0;
-			led_switch <= 1;
-		end
-		else
-		  begin
-			counter <= counter + 1;
-			//w_flag <= 1;
-		  end
 
 endmodule
