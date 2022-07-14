@@ -13,6 +13,7 @@ module test;
 	$dumpfile("ziposoc_tb.vcd");
 	$dumpvars(0, addr);
 	$dumpvars(1, byte_read);
+	$dumpvars(2, byte_write);
 /*     # 17 copy = 0;
 	 # 25 led = 8'b10110110;
      # 100 $finish;*/
@@ -23,15 +24,15 @@ module test;
   always #5 clk_1khz = !clk_1khz;
 
   data_bus data(.clk(clk_1khz), .rw(rw), .addr(addr), .read(byte_read), .write(byte_write), .exception(exception));
-  zipocpu cpu(clk25_mhz, rw, addr, byte_write, byte_read);
+  zipocpu cpu(clk_1khz, rw, addr, byte_write, byte_read);
   
   always @(posedge clk_1khz) 
 		if (addr == `MEM_END)
 			$finish;
 		else
 		  begin
-			$dumpvars(0, addr);
-			$dumpvars(1, byte_read);
+			$display("Addr: %b", addr);
+			//$display("Read: %b", byte_read);
 		  end
 
 /*  initial
