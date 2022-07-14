@@ -3,7 +3,7 @@
 module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `INITIAL_SP */
 				)
 				(input clk,
-				output reg rw,
+				output reg rw = 0,
 				output reg [63:0] addr,
 				output reg [63:0] write,
 				input [63:0] read);
