@@ -79,7 +79,8 @@ module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `I
 	always @(posedge clk) begin
 		addr <= PC;
 		PC <= PC + 1;
-		if (read[5:0] == `RV_ADD)//MAYBE CAN USE B'XXXX01010
+		//if ({read[31:24], 18'b0000000000000000000000000, read[7:0]} == `RV_ADD)
+		if (read[7:0] == `RV_ALU_INSTRUCTIONS)
 			write <= PC;
 	end
 	
