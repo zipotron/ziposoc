@@ -80,7 +80,7 @@ module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `I
 		addr <= PC;
 		PC <= PC + 1;
 		//if ({read[31:24], 18'b0000000000000000000000000, read[7:0]} == `RV_ADD)
-		if (read[7:0] == `RV_ALU_INSTRUCTIONS)
+		if (read[7:`RV_32_SET] == `RV_ALU_INSTRUCTIONS)
 			write <= PC;
 	end
 	
