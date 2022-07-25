@@ -36,7 +36,7 @@ sint: ziposoc.bit
 
 ziposoc.bit: ziposoc.v
 
-	yosys -p 'synth_ecp5 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v
+	yosys -p 'synth_ecp5 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v expander.v alu.v
 
 	nextpnr-ecp5 --${DEVICE} --package CABGA381 --freq 25 --json ziposoc.json --lpf ulx3s_v20.lpf --textcfg ziposoc.config
 
@@ -47,15 +47,15 @@ flash:
 
 
 sim:
-	iverilog -o ziposoc_tb.out memory_map.v data_bus.v ram.v zipocpu.v ziposoc_tb.v
+	iverilog -o ziposoc_tb.out memory_map.v data_bus.v ram.v zipocpu.v expander.v alu.v ziposoc_tb.v
 	./ziposoc_tb.out &
 	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw
 
 diagram:
-	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
+	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v expander.v alu.v
 	
 schematic:
-	yosys -p 'prep -top ziposoc -flatten; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v instr_decompress.v
+	yosys -p 'prep -top ziposoc -flatten; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v expander.v alu.v
 	
 clean:
 	rm -f $(TARGETS) *.o *.elf *.mem *.disasm *.hex *.bin *.bit *.json *.config *.out *.vcd *~
