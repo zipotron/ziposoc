@@ -7,7 +7,7 @@
 // I extension
 
 //                                     XXXXX-- [RV_32_SET 2]  
-`define RV_ALU_INSTRUCTIONS         5'b00100//
+`define RV_ALU_REG_INSTR         5'b01100//
 //                         0000000xxxxxxxxxx000xxxxx0110011
 `define RV_ADD         32'b00000000000000000000000000110011
 `define RV_SUB         32'b01000000000000000000000000110011
@@ -20,6 +20,7 @@
 `define RV_OR         32'b00000000000000000110000000110011
 `define RV_AND         32'b00000000000000000111000000110011
 
+`define RV_ALU_INM_INSTR         5'b00100//
 //                          xxxxxxxxxxxxxxxxx000xxxxx0010011
 `define RV_ADDI         32'b00000000000000000000000000010011
 `define RV_SLLI         32'b00000000000000000001000000010011
