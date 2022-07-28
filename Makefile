@@ -51,6 +51,11 @@ sim:
 	./ziposoc_tb.out &
 	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw
 
+cpu_sim:
+	iverilog -o zipocpu_tb.out memory_map_tb.v ram_tb.v zipocpu.v expander.v alu.v zipocpu_tb.v
+	./zipocpu_tb.out &
+	gtkwave zipocpu_tb.vcd zipocpu_tb.gtkw
+
 diagram:
 	yosys -p 'prep -top ziposoc; write_json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v expander.v alu.v
 	

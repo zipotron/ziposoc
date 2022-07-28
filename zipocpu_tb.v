@@ -8,7 +8,7 @@ module test;
 	wire rw;
 	
   initial begin
-	$dumpfile("ziposoc_tb.vcd");
+	$dumpfile("zipocpu_tb.vcd");
 	$dumpvars(0, addr);
 	$dumpvars(1, byte_read);
 	$dumpvars(2, byte_write);
@@ -21,7 +21,7 @@ module test;
   reg clk_1khz = 0;
   always #5 clk_1khz = !clk_1khz;
 
-  data_bus data(.clk(clk_1khz), .rw(rw), .addr(addr), .read(byte_read), .write(byte_write), .exception(exception));
+  ram_tb ram(.clk(clk_1khz), .rw(rw), .addr(addr), .read(byte_read), .write(byte_write), .exception(exception));
   zipocpu cpu(clk_1khz, rw, addr, byte_write, byte_read);
   
   always @(posedge clk_1khz) 
