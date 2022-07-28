@@ -76,28 +76,33 @@ module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `I
 	assign t5 = X[30]; //Temporary
 	assign t6 = X[31]; //Temporary
 	
+	reg pc_hooker = 0;
+	wire [31:0] read_aux;
+	assign read_aux = pc_hooker? read[63:32]: read[31:0];
+	
 	wire [2:0] func;
 	wire sign;
 	wire [63:0] op_a;
 	wire [63:0] op_b;
 	wire [63:0] res;
 	
-	assign func = (~|(read[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR) | ~|(read[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? read[14:12] :0;
-	assign sign = ~|(read[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR)? read[30] :0;
-	assign op_a = (~|(read[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR) | ~|(read[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? X[read[19:15]] :0;
-	assign op_b = ~|(read[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR)? X[read[24:20]] : ~|(read[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR)? read[31:20] :0;
-	/*assign func = ((read[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read[7:`RV_32_SET] == `RV_ALU_INM_INSTR))? read[14:12] :0;
-	assign sign = (read[7:`RV_32_SET] == `RV_ALU_REG_INSTR)? read[30] :0;
-	assign op_a = ((read[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read[7:`RV_32_SET] == `RV_ALU_INM_INSTR))? X[read[19:15]] :0;
-	assign op_b = (read[7:`RV_32_SET] == `RV_ALU_REG_INSTR)? X[read[24:20]] : (read[7:`RV_32_SET] == `RV_ALU_INM_INSTR)? read[31:20] :0;*/
+	assign func = (~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR) | ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? read_aux[14:12] :0;
+	assign sign = ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR)? read_aux[30] :0;
+	assign op_a = (~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR) | ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? X[read_aux[19:15]] :0;
+	assign op_b = ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR)? X[read_aux[24:20]] : ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR)? read_aux[31:20] :0;
+	/*assign func = ((read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read_aux[7:`RV_32_SET] == `RV_ALU_INM_INSTR))? read_aux[14:12] :0;
+	assign sign = (read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR)? read_aux[30] :0;
+	assign op_a = ((read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read_aux[7:`RV_32_SET] == `RV_ALU_INM_INSTR))? X[read_aux[19:15]] :0;
+	assign op_b = (read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR)? X[read_aux[24:20]] : (read_aux[7:`RV_32_SET] == `RV_ALU_INM_INSTR)? read_aux[31:20] :0;*/
 	alu alu_1(func, sign, op_a, op_b, res);
 	
 	always @(posedge clk) begin
+		pc_hooker <= ~pc_hooker;
 		addr <= PC;
-		PC <= PC + 1;
-		//if ({read[31:24], 18'b0000000000000000000000000, read[7:0]} == `RV_ADD)
-		if ((read[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read[7:`RV_32_SET] == `RV_ALU_INM_INSTR)) begin
-			X[read[11:7]] <= res;
+		PC <= PC + 4;
+		//if ({read_aux[31:24], 18'b0000000000000000000000000, read_aux[7:0]} == `RV_ADD)
+		if ((read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read_aux[7:`RV_32_SET] == `RV_ALU_INM_INSTR)) begin
+			X[read_aux[11:7]] <= res;
 			write <= res;
 		end
 	end
