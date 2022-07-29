@@ -52,7 +52,7 @@ sim:
 	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw
 
 cpu_sim:
-	iverilog -o zipocpu_tb.out memory_map_tb.v ram_tb.v zipocpu.v expander.v alu.v zipocpu_tb.v
+	iverilog -o zipocpu_tb.out memory_map_tb.v ram_tb.v expander.v alu.v zipocpu_tb.v
 	./zipocpu_tb.out &
 	gtkwave zipocpu_tb.vcd zipocpu_tb.gtkw
 

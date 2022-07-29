@@ -2,7 +2,41 @@
 
 module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `INITIAL_SP */
 				)
-				(input clk,
+				(
+`ifdef DEBUG
+				output wire [63:0]ra, //Return address
+				output wire [63:0]sp, //Stack pointer
+				output wire [63:0]gp, //Global pointer
+				output wire [63:0]tp, //Thread pointer
+				output wire [63:0]t0, //Temporary / alternate return address
+				output wire [63:0]t1, //Temporary
+				output wire [63:0]t2, //Temporary
+				output wire [63:0]s0, //Saved register / frame pointer
+				output wire [63:0]s1, //Saved register
+				output wire [63:0]a0, //Function argument / return value
+				output wire [63:0]a1, //Function argument / return value
+				output wire [63:0]a2, //Function argument
+				output wire [63:0]a3, //Function argument
+				output wire [63:0]a4, //Function argument
+				output wire [63:0]a5, //Function argument
+				output wire [63:0]a6, //Function argument
+				output wire [63:0]a7, //Function argument
+				output wire [63:0]s2, //Saved register
+				output wire [63:0]s3, //Saved register
+				output wire [63:0]s4, //Saved register
+				output wire [63:0]s5, //Saved register
+				output wire [63:0]s6, //Saved register
+				output wire [63:0]s7, //Saved register
+				output wire [63:0]s8, //Saved register
+				output wire [63:0]s9, //Saved register
+				output wire [63:0]s10, //Saved register
+				output wire [63:0]s11, //Saved register
+				output wire [63:0]t3, //Temporary
+				output wire [63:0]t4, //Temporary
+				output wire [63:0]t5, //Temporary
+				output wire [63:0]t6, //Temporary
+`endif
+				input clk,
 				output reg rw = 0,
 				output reg [63:0] addr,
 				output reg [63:0] write,
@@ -12,38 +46,9 @@ module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `I
 	reg [63:0]X[1:31];
 	
 	wire [63:0]zero; //Always zero
-	wire [63:0]ra; //Return address
-	wire [63:0]sp; //Stack pointer
-	wire [63:0]gp; //Global pointer
-	wire [63:0]tp; //Thread pointer
-	wire [63:0]t0; //Temporary / alternate return address 	
-	wire [63:0]t1; //Temporary
-	wire [63:0]t2; //Temporary
-	wire [63:0]s0; //Saved register / frame pointer
-	wire [63:0]s1; //Saved register
-	wire [63:0]a0; //Function argument / return value
-	wire [63:0]a1; //Function argument / return value
-	wire [63:0]a2; //Function argument
-	wire [63:0]a3; //Function argument
-	wire [63:0]a4; //Function argument
-	wire [63:0]a5; //Function argument
-	wire [63:0]a6; //Function argument
-	wire [63:0]a7; //Function argument
-	wire [63:0]s2; //Saved register
-	wire [63:0]s3; //Saved register
-	wire [63:0]s4; //Saved register
-	wire [63:0]s5; //Saved register
-	wire [63:0]s6; //Saved register
-	wire [63:0]s7; //Saved register
-	wire [63:0]s8; //Saved register
-	wire [63:0]s9; //Saved register
-	wire [63:0]s10; //Saved register
-	wire [63:0]s11; //Saved register
-	wire [63:0]t3; //Temporary
-	wire [63:0]t4; //Temporary
-	wire [63:0]t5; //Temporary
-	wire [63:0]t6; //Temporary
+	assign zero = 0;
 	
+`ifdef DEBUG
 	assign ra = X[1]; //Return address
 	assign sp = X[2]; //Stack pointer
 	assign gp = X[3]; //Global pointer
@@ -75,7 +80,8 @@ module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `I
 	assign t4 = X[29]; //Temporary
 	assign t5 = X[30]; //Temporary
 	assign t6 = X[31]; //Temporary
-	
+`endif
+
 	reg pc_hooker = 0;
 	wire [31:0] read_aux;
 	assign read_aux = pc_hooker? read[63:32]: read[31:0];
