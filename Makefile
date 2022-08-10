@@ -36,7 +36,7 @@ sint: ziposoc.bit
 
 ziposoc.bit: ziposoc.v
 
-	yosys -p 'synth_ecp5 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v expander.v alu.v
+	yosys -p 'synth_ecp5 -top ziposoc -json ziposoc.json' ziposoc.v zipocpu.v data_bus.v ram.v expander.v alu.v comparator.v
 
 	nextpnr-ecp5 --${DEVICE} --package CABGA381 --freq 25 --json ziposoc.json --lpf ulx3s_v20.lpf --textcfg ziposoc.config
 
@@ -47,12 +47,12 @@ flash:
 
 
 sim:
-	iverilog -o ziposoc_tb.out memory_map.v data_bus.v ram.v zipocpu.v expander.v alu.v ziposoc_tb.v
+	iverilog -o ziposoc_tb.out memory_map.v data_bus.v ram.v zipocpu.v expander.v alu.v comparator.v ziposoc_tb.v
 	./ziposoc_tb.out &
 	gtkwave ziposoc_tb.vcd ziposoc_tb.gtkw
 
 cpu_sim:
-	iverilog -o zipocpu_tb.out memory_map_tb.v ram_tb.v expander.v alu.v zipocpu_tb.v
+	iverilog -o zipocpu_tb.out memory_map_tb.v instructions.v ram_tb.v expander.v alu.v comparator.v zipocpu_tb.v
 	./zipocpu_tb.out &
 	gtkwave zipocpu_tb.vcd zipocpu_tb.gtkw
 

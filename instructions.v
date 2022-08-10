@@ -42,3 +42,19 @@
 //`define F_SRA         3'b101
 `define F_OR          3'b110
 `define F_AND         3'b111
+
+`define RV_CMP_INSTR         5'b11000//
+//                           0000000xxxxxxxxxx000xxxxx1100011
+//`define RV_BEQ         32'b00000000000000000000000001100011//SB type
+//`define RV_BNE         32'b00000000000000000001000001100011//SB type
+//`define RV_BLT         32'b00000000000000000100000001100011//SB type
+//`define RV_BGE         32'b00000000000000000101000001100011//SB type
+//`define RV_BLTU        32'b00000000000000000110000001100011//SB type
+//`define RV_BGEU        32'b00000000000000000111000001100011//SB type
+
+`define F_BEQ         3'b000
+`define F_BNE         3'b001
+`define F_BLT         3'b100
+`define F_BGE         3'b101
+`define F_BLTU        3'b110
+`define F_BGEU        3'b111

@@ -1,4 +1,5 @@
 `include "instructions.v"
+`define ALU_COMPARATOR_INSTR (~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR) | ~|(read_aux[7:`RV_32_SET] ^ `RV_CMP_INSTR))
 
 module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `INITIAL_SP */
 				)
@@ -92,14 +93,12 @@ module zipocpu #(parameter	initial_PC = `INITIAL_PC/*, parameter	initial_SP = `I
 	wire [63:0] op_b;
 	wire [63:0] res;
 	
-	assign func = (~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR) | ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? read_aux[14:12] :0;
+	assign func = (`ALU_COMPARATOR_INSTR | ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? read_aux[14:12] :0;
 	assign sign = ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR)? read_aux[30] :0;
-	assign op_a = (~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR) | ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? X[read_aux[19:15]] :0;
-	assign op_b = ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_REG_INSTR)? X[read_aux[24:20]] : ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR)? read_aux[31:20] :0;
-	/*assign func = ((read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read_aux[7:`RV_32_SET] == `RV_ALU_INM_INSTR))? read_aux[14:12] :0;
-	assign sign = (read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR)? read_aux[30] :0;
-	assign op_a = ((read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR) || (read_aux[7:`RV_32_SET] == `RV_ALU_INM_INSTR))? X[read_aux[19:15]] :0;
-	assign op_b = (read_aux[7:`RV_32_SET] == `RV_ALU_REG_INSTR)? X[read_aux[24:20]] : (read_aux[7:`RV_32_SET] == `RV_ALU_INM_INSTR)? read_aux[31:20] :0;*/
+	assign op_a = (`ALU_COMPARATOR_INSTR | ~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR))? X[read_aux[19:15]] :0;
+	assign op_b = `ALU_COMPARATOR_INSTR? X[read_aux[24:20]] :
+										~|(read_aux[7:`RV_32_SET] ^ `RV_ALU_INM_INSTR)? read_aux[31:20] :0;
+
 	alu alu_1(func, sign, op_a, op_b, res);
 	
 	always @(posedge clk) begin
